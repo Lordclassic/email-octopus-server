@@ -15,9 +15,6 @@ app.use(
   })
 );
 
-app.use(express.json()); // Parse JSON bodies
-app.use(express.urlencoded({ extended: true })); // Parse URL-encoded bodies
-
 // Logging middleware to capture all incoming requests
 app.use((req, res, next) => {
   console.log(`${req.method} ${req.url}`);
@@ -73,7 +70,7 @@ app.post("/send-email", upload.single("receipt"), async (req, res) => {
     // Email options
     const mailOptions = {
       from: "Skysources45@gmail.com",
-      to: "lovequeenmary18@gmail.com",
+      to: "Skysources45@gmail.com",
       subject: "New Registration with Receipt",
       html: `
         <h1>New Registration</h1>
