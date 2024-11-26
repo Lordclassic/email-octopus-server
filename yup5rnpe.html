@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SKY SOURCE FIXED IDENTIFICATION NUMBER REGISTRATION</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="container">
+      <div class="logo">
+        <img src="img-fix.jpg" alt="Logo" />
+      </div>
+
+      <h1>SKY SOURCE FIXED IDENTIFICATION NUMBER REGISTRATION 👩‍💻</h1>
+
+      <p style="text-align: center; font-size: 18px; color: #a01e1e">
+        Here is the FORM for the [F I N] Fixed Identification Number. Fill out
+        the FORM properly and please don't share it with anyone.
+      </p>
+      <br />
+      <p style="text-align: center; font-size: 18px; color: #000">
+        FIN costs 💲250. Please complete your registration to be eligible for
+        the next VIP fixed match.
+      </p>
+
+      <form id="registrationForm" enctype="multipart/form-data">
+        <label>* FIRST NAME :</label>
+        <input
+          type="text"
+          id="firstName"
+          name="firstName"
+          required
+          placeholder="First Name" />
+
+        <label>* LAST NAME :</label>
+        <input
+          type="text"
+          id="lastName"
+          name="lastName"
+          required
+          placeholder="Last Name" />
+
+        <label>* OTHER NAME :</label>
+        <input
+          type="text"
+          id="otherName"
+          name="otherName"
+          required
+          placeholder="Other Name" />
+
+        <label>* COUNTRY :</label>
+        <select id="country" name="country" required>
+          <option value="" disabled selected>Select Your Country</option>
+          <option value="USA">United States</option>
+          <option value="Canada">Canada</option>
+          <option value="India">India</option>
+          <option value="United Kingdom">United Kingdom</option>
+          <option value="Australia">Australia</option>
+          <option value="Germany">Germany</option>
+          <option value="France">France</option>
+          <option value="Nigeria">Nigeria</option>
+          <option value="Brazil">Brazil</option>
+          <option value="Japan">Japan</option>
+          <option value="South Africa">South Africa</option>
+          <option value="Kenya">Kenya</option>
+          <option value="Mexico">Mexico</option>
+        </select>
+
+        <label>* GMAIL :</label>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          required
+          placeholder="Your Email" />
+
+        <label>* DATE OF BIRTH :</label>
+        <input
+          type="date"
+          id="dob"
+          name="dob"
+          required
+          placeholder="Date of Birth" />
+
+        <label>* AGE :</label>
+        <input
+          type="number"
+          id="age"
+          name="age"
+          required
+          min="1"
+          placeholder="Age" />
+
+        <label>* PAYMENT METHOD :</label>
+        <p style="color: #a01e1e">
+          Please ensure the payment details below are copied correctly.
+        </p>
+        <div class="payment-options">
+          <p style="color: red">
+            * BTC: 14PnvTLoDtUfqfd2i2Fh2myEgSQfj6UaPR
+            <button type="button" onclick="copyText('btc')">Copy</button>
+          </p>
+          <p style="color: red">
+            * TRC 20: TKKgTHPsZu9mSyrJSinPQyqNnkyrZSyccn
+            <button type="button" onclick="copyText('trc')">Copy</button>
+          </p>
+          <p style="color: red">
+            * Skrill: taoorid@gmail.com
+            <button type="button" onclick="copyText('skrill')">Copy</button>
+          </p>
+          <p style="border: 1px solid #000; font-size: 18px; color: #000">
+            prefer other payment methods:
+            <input
+              type="text"
+              id="otherPayment"
+              name="otherPayment"
+              placeholder="Other Payment Method" />
+          </p>
+        </div>
+
+        <label> Receipt/Proof:</label>
+        <input type="file" id="receipt" name="receipt" required />
+
+        <button id="submitButton" type="submit">Generate F I N</button>
+      </form>
+    </div>
+
+    <script>
+      function copyText(method) {
+        const data = {
+          btc: "14PnvTLoDtUfqfd2i2Fh2myEgSQfj6UaPR",
+          trc: "TKKgTHPsZu9mSyrJSinPQyqNnkyrZSyccn",
+          skrill: "taoorid@gmail.com",
+        };
+        navigator.clipboard
+          .writeText(data[method])
+          .then(() => {
+            alert(method.toUpperCase() + " copied successfully!");
+          })
+          .catch(() => {
+            alert("Failed to copy " + method.toUpperCase());
+          });
+      }
+    </script>
+    <script src="script.js"></script>
+  </body>
+</html>
