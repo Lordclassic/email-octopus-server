@@ -11,7 +11,7 @@ const app = express();
 // Middleware
 app.use(
   cors({
-    origin: ["http://localhost:3000", "http://127.0.0.1:5500"], // Allow multiple origins
+    origin: ["https://your-frontend.vercel.app"], // Allow multiple origins
   })
 );
 
@@ -25,7 +25,7 @@ app.use((req, res, next) => {
 // Configure Multer for file uploads
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, "uploads/"); // Directory to save uploaded files
+    cb(null, "/tmp"); // Directory to save uploaded files
   },
   filename: (req, file, cb) => {
     cb(null, Date.now() + path.extname(file.originalname)); // Unique file name
@@ -99,7 +99,9 @@ app.post("/send-email", upload.single("receipt"), async (req, res) => {
     });
 
     // Send a successful response to the client
-    return res.status(200).json({ message: "Email sent successfully!" });
+    return res.status(200).json({
+      message: "info sent successfully we will Get back too you soon!",
+    });
   } catch (error) {
     console.error("Error in /send-email route:", error);
     return res
@@ -114,6 +116,7 @@ if (!fs.existsSync("uploads")) {
 }
 
 // Start the server
-app.listen(3000, () => {
-  console.log("Server running on http://localhost:3000");
+const PORT = process.env.PORT || 3000; // Use Vercel's assigned port or fallback to 3000
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });

@@ -12,7 +12,7 @@ document
     }
 
     // Send the form data to the server
-    fetch("http://localhost:3000/send-email", {
+    fetch("https://your-backend.vercel.app/send-email", {
       method: "POST",
       body: formData, // Send form data with file attached
     })
