@@ -1,4 +1,10 @@
+const backendUrl =
+  window.location.hostname === "127.0.0.1"
+    ? "http://localhost:3000" // Local backend for development
+    : "https://your-backend.vercel.app"; // Deployed backend for production
+
 document
+
   .getElementById("registrationForm")
   .addEventListener("submit", function (event) {
     event.preventDefault(); // Prevents default form submission
@@ -12,7 +18,7 @@ document
     }
 
     // Send the form data to the server
-    fetch("https://your-backend.vercel.app/send-email", {
+    fetch(`${backendUrl}/send-email`, {
       method: "POST",
       body: formData, // Send form data with file attached
     })
