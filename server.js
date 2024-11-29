@@ -2,8 +2,6 @@ const express = require("express");
 const nodemailer = require("nodemailer");
 const cors = require("cors");
 const multer = require("multer");
-const path = require("path");
-const fs = require("fs");
 require("dotenv").config(); // Load environment variables from .env file
 
 const app = express();
@@ -11,30 +9,22 @@ const app = express();
 // Middleware
 app.use(
   cors({
-    origin: ["https://your-frontend.vercel.app"], // Allow multiple origins
+    origin: [
+      "https://your-frontend.vercel.app", // Your deployed frontend
+      "http://127.0.0.1:5500", // Local development frontend
+    ],
+    methods: ["GET", "POST"], // Allow only the required HTTP methods
+    credentials: true, // Include this if you're working with cookies
   })
 );
 
-// Logging middleware to capture all incoming requests
-app.use((req, res, next) => {
-  console.log(`${req.method} ${req.url}`);
-  console.log("Request Body:", req.body); // Log the request body
-  next();
-});
-
-// Configure Multer for file uploads
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "/tmp"); // Directory to save uploaded files
-  },
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + path.extname(file.originalname)); // Unique file name
-  },
-});
+// Configure Multer for file uploads using in-memory storage
+const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
 // Route to handle form submission and file upload
 app.post("/send-email", upload.single("receipt"), async (req, res) => {
+  console.log("Incoming request to /send-email");
   try {
     console.log("Request Body:", req.body); // Log incoming data
     console.log("Uploaded File:", req.file); // Log uploaded file
@@ -45,7 +35,6 @@ app.post("/send-email", upload.single("receipt"), async (req, res) => {
         .status(400)
         .json({ error: "Request body is empty or invalid." });
     }
-    console.log("Request Body:", req.body);
 
     // Extract form data from req.body
     const { firstName, lastName, email, country, dob, age, otherPayment } =
@@ -56,20 +45,18 @@ app.post("/send-email", upload.single("receipt"), async (req, res) => {
       return res.json({ error: "First name and email are required" });
     }
 
-    const receiptFilePath = req.file ? req.file.path : null;
-
     // Nodemailer transport configuration
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
         user: process.env.EMAIL_USER, // Your email address
-        pass: process.env.EMAIL_PASS, // Your email app password/ Replace with your app password
+        pass: process.env.EMAIL_PASS, // Your email app password
       },
     });
 
     // Email options
     const mailOptions = {
-      from: "Skysources45@gmail.com",
+      from: process.env.EMAIL_USER,
       to: "Skysources45@gmail.com",
       subject: "New Registration with Receipt",
       html: `
@@ -80,27 +67,22 @@ app.post("/send-email", upload.single("receipt"), async (req, res) => {
         <p><strong>Country:</strong> ${country}</p>
         <p><strong>Date of Birth:</strong> ${dob}</p>
         <p><strong>Age:</strong> ${age}</p>
-         <p><strong>otherPayment:</strong> ${otherPayment}</p>
+        <p><strong>Other Payment:</strong> ${otherPayment}</p>
       `,
-      attachments: receiptFilePath
-        ? [{ filename: path.basename(receiptFilePath), path: receiptFilePath }]
+      attachments: req.file
+        ? [{ filename: req.file.originalname, content: req.file.buffer }]
         : [],
     };
-    console.log("Uploaded File:", req.file); // Log uploaded file
-    console.log("File path:", req.file ? req.file.path : "No file uploaded");
+
+    // Verify transporter configuration
+    await transporter.verify();
 
     // Send email
-    await transporter.sendMail(mailOptions, (error, info) => {
-      if (error) {
-        console.log("Error: " + error);
-      } else {
-        console.log("Email sent: " + info.response);
-      }
-    });
+    await transporter.sendMail(mailOptions);
 
     // Send a successful response to the client
     return res.status(200).json({
-      message: "info sent successfully we will Get back too you soon!",
+      message: "Info sent successfully! We will get back to you soon!",
     });
   } catch (error) {
     console.error("Error in /send-email route:", error);
@@ -109,11 +91,6 @@ app.post("/send-email", upload.single("receipt"), async (req, res) => {
       .json({ error: "Internal Server Error", details: error.message });
   }
 });
-
-// Create uploads directory if it doesn't exist
-if (!fs.existsSync("uploads")) {
-  fs.mkdirSync("uploads");
-}
 
 // Start the server
 const PORT = process.env.PORT || 3000; // Use Vercel's assigned port or fallback to 3000
